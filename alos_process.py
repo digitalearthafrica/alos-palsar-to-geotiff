@@ -157,41 +157,40 @@ def combine_cog(PATH, OUTPATH, TILE, YEAR):
     return output_cogs
 
 
-def get_ref_points(OUTDIR, YEAR, TILE):
-    if int(YEAR)>2010:
-        datasetpath = os.path.join(OUTDIR, '{}_{}_sl_HH_F02DAR.tif'.format(TILE, YEAR[-2:]))
-    else:
-        datasetpath = os.path.join(OUTDIR, '{}_{}_sl_HH.tif'.format(TILE, YEAR[-2:]))
-    dataset = rasterio.open(datasetpath)
-    bounds = dataset.bounds
+def fix_values(num):
+    # We do this to get rid of tiny floating point versions of zero and add a little number to remove negative zero
+    return round(num + 0.000000001, 3)
+
+
+def get_ref_points(bounds):
     return {
-        'll': {'x': bounds[0], 'y': bounds[1]},
-        'lr': {'x': bounds[2], 'y': bounds[1]},
-        'ul': {'x': bounds[0], 'y': bounds[3]},
-        'ur': {'x': bounds[2], 'y': bounds[3]},
+        'll': {'x': fix_values(bounds[0]), 'y': fix_values(bounds[1])},
+        'lr': {'x': fix_values(bounds[2]), 'y': fix_values(bounds[1])},
+        'ul': {'x': fix_values(bounds[0]), 'y': fix_values(bounds[3])},
+        'ur': {'x': fix_values(bounds[2]), 'y': fix_values(bounds[3])},
     }
 
 
-def get_coords(OUTDIR, YEAR, TILE):
-    if int(YEAR)>2010:
-        datasetpath = os.path.join(OUTDIR, '{}_{}_sl_HH_F02DAR.tif'.format(TILE, YEAR[-2:]))
-    else:
-        datasetpath = os.path.join(OUTDIR, '{}_{}_sl_HH.tif'.format(TILE, YEAR[-2:]))
-    dataset = rasterio.open(datasetpath)
-    bounds = dataset.bounds
+def get_coords(bounds):
     return {
-        'll': {'lat': bounds[1], 'lon': bounds[0]},
-        'lr': {'lat': bounds[1], 'lon': bounds[2]},
-        'ul': {'lat': bounds[3], 'lon': bounds[0]},
-        'ur': {'lat': bounds[3], 'lon': bounds[2]},
+        'll': {'lat': fix_values(bounds[1]), 'lon': fix_values(bounds[0])},
+        'lr': {'lat': fix_values(bounds[1]), 'lon': fix_values(bounds[2])},
+        'ul': {'lat': fix_values(bounds[3]), 'lon': fix_values(bounds[0])},
+        'ur': {'lat': fix_values(bounds[3]), 'lon': fix_values(bounds[2])},
     }
 
 
 def write_yaml(OUTDIR, YEAR, TILE):
     logging.info("Writing yaml.")
     yaml_filename = os.path.join(OUTDIR, "{}_{}.yaml".format(TILE, YEAR))
-    geo_ref_points = get_ref_points(OUTDIR, YEAR, TILE)
-    coords = get_coords(OUTDIR, YEAR, TILE)
+    if int(YEAR)>2010:
+        datasetpath = os.path.join(OUTDIR, '{}_{}_sl_HH_F02DAR.tif'.format(TILE, YEAR[-2:]))
+    else:
+        datasetpath = os.path.join(OUTDIR, '{}_{}_sl_HH.tif'.format(TILE, YEAR[-2:]))
+    dataset = rasterio.open(datasetpath)
+    bounds = dataset.bounds
+    geo_ref_points = get_ref_points(bounds)
+    coords = get_coords(bounds)
     creation_date = datetime.datetime.today().strftime("%Y-%m-%dT%H:%M:%S")
     if int(YEAR) > 2010:
         hhpath = '{}_{}_sl_HH_F02DAR.tif'.format(TILE, YEAR[-2:])
