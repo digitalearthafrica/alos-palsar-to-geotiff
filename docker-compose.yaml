@@ -1,0 +1,13 @@
+version: "3.4"
+services:
+  alos:
+    build: .
+    environment:
+      - S3_BUCKET=test-results-deafrica-staging-west
+      - S3_PATH=alos
+      - SQS_QUEUE=alex-alive-queue
+      - AWS_DEFAULT_REGION=us-west-2
+      - AWS_ACCESS_KEY_ID=${ODC_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${ODC_SECRET_KEY}
+    volumes:
+      - ./:/opt/alos

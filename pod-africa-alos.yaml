@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alos-cog-files
+  labels:
+    app: alos-cog-files
+  annotations:
+    iam.amazonaws.com/role: deafrica-ec2-s3_access
+spec:
+  containers:
+  - name: alos-cog-files
+    image: opendatacube/alos-cogger
+    args: [ "python3", "run_job.py" ]
+    resources:
+      requests:
+        cpu: 1
+        memory: 8192Mi
+      limits:
+        memory: 8192Mi
+    tty: true
+    stdin: true
+    env:
+    - name: AWS_DEFAULT_REGION
+      value: "us-west-2"
+    - name: S3_BUCKET
+      value: "test-results-deafrica-staging-west"
+    - name: S3_PATH
+      value: "alos"
+    - name: SQS_QUEUE
+      value: "alex-alive-queue"
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  restartPolicy: Never

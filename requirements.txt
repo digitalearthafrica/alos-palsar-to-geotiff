@@ -1,0 +1,6 @@
+ruamel.yaml
+rasterio
+rio-cogeo
+numpy~=1.15
+boto3
+uuid
