@@ -11,6 +11,9 @@ This script downloads ALOS tiles from the JAXA FTP and combines them by band, CO
 Requirements
 ========
 
+This script requires the following libraries: 
+
+* 
 
 
 
