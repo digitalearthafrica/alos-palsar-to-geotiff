@@ -40,9 +40,9 @@ How to run
 Edit `alos_process.py` to input a specific tile in a YEAR/TILE string as well as S3 information if necessary, else comment out. Run `alos_process.py` 
 
 ## Using AWS K8s
-Build the docker file using `docker build . --tag ******/alos-cogger` Where `******` is the repository within Dockerhub where you have access.
-Push the docker container to DockerHub using `docker push *****/alos-cogger`.
-Edit `add_to_queue.py` with the relevant AWS environment variables (queue names, S3 path/key) for your setup. 
-Use `add_to_queue.py` to add tiles to queue. 
-Edit the pod/deployment yamls with the relevant AWS environment variables.
-Deploy a K8s pods/deployment using `kubectl apply -f *-africa-alos.yaml` Where `*` is the `pod` or `deployment`. 
+1. Build the docker file using `docker build . --tag ******/alos-cogger` Where `******` is the repository within Dockerhub where you have access.
+2. Push the docker container to DockerHub using `docker push *****/alos-cogger`.
+3. Edit `add_to_queue.py` with the relevant AWS environment variables (queue names, S3 path/key) for your setup. 
+4. Use `add_to_queue.py` to add tiles to queue. 
+5. Edit the pod/deployment yamls with the relevant AWS environment variables.
+6. Deploy a K8s pods/deployment using `kubectl apply -f *-africa-alos.yaml` Where `*` is the `pod` or `deployment`. 
