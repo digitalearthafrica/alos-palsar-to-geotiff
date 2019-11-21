@@ -31,9 +31,10 @@ cog_profile = {
 
 
 def setup_logging():
-    logging.basicConfig(level=logging.INFO,
-    format='%(asctime)s %(levelname)-8s %(message)s',
-    datefmt='%m-%d %H:%M'                    
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s %(levelname)-8s %(message)s',
+        datefmt='%m-%d %H:%M'
     )
     logging.getLogger('boto3').setLevel(logging.CRITICAL)
     logging.getLogger('botocore').setLevel(logging.CRITICAL)
@@ -121,12 +122,11 @@ def combine_cog(PATH, OUTPATH, TILE, YEAR):
                         in_filename = os.path.join(path, fname)
                         all_files.append(in_filename)
 
-
         # Create the VRT
         logging.info("Building VRT for {} with {} files found".format(
             band, len(all_files)))
         vrt_path = os.path.join(gtiff_abs_path, '{}.vrt'.format(band))
-        if int(YEAR)>2010:
+        if int(YEAR) > 2010:
             cog_filename = os.path.join(outtiff_abs_path, '{}_{}_sl_{}_F02DAR.tif'.format(TILE, YEAR[-2:], band))
         else:
             cog_filename = os.path.join(outtiff_abs_path, '{}_{}_sl_{}.tif'.format(TILE, YEAR[-2:], band))
@@ -183,7 +183,7 @@ def get_coords(bounds):
 def write_yaml(OUTDIR, YEAR, TILE):
     logging.info("Writing yaml.")
     yaml_filename = os.path.join(OUTDIR, "{}_{}.yaml".format(TILE, YEAR))
-    if int(YEAR)>2010:
+    if int(YEAR) > 2010:
         datasetpath = os.path.join(OUTDIR, '{}_{}_sl_HH_F02DAR.tif'.format(TILE, YEAR[-2:]))
     else:
         datasetpath = os.path.join(OUTDIR, '{}_{}_sl_HH.tif'.format(TILE, YEAR[-2:]))
