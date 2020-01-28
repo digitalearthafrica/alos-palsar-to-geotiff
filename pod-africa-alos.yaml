@@ -23,7 +23,7 @@ spec:
     - name: AWS_DEFAULT_REGION
       value: "us-west-2"
     - name: S3_BUCKET
-      value: "test-results-deafrica-staging-west"
+      value: "deafrica-data-dev"
     - name: S3_PATH
       value: "alos"
     - name: SQS_QUEUE

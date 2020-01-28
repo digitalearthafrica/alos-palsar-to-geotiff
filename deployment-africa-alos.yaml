@@ -28,7 +28,7 @@ spec:
                     values:
                       - spot
       containers:
-      - name: alos-cog-files
+      - name: alos-cogger
         image: opendatacube/alos-cogger
         command: [ "python3", "run_job.py" ]
         resources:
@@ -36,19 +36,16 @@ spec:
             cpu: 1.0
             memory: 8192Mi
           limits:
-            cpu: 1
-            memory: 8192Mi
+            cpu: 2.0
+            memory: 16384Mi
         tty: true
         stdin: true
         env:
         - name: AWS_DEFAULT_REGION
           value: "us-west-2"
         - name: S3_BUCKET
-          value: "test-results-deafrica-staging-west"
+          value: "deafrica-data-dev"
         - name: S3_PATH
           value: "alos"
         - name: SQS_QUEUE
           value: "alex-alive-queue"
-
-
-      
