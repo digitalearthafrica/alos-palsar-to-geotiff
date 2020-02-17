@@ -1,10 +1,10 @@
 # alos-palsar-to-geotiff
-ALOS/ALOS-2 PALSAR/PALSAR-2 Data Wrangling Script. 
+ALOS/ALOS-2 PALSAR/PALSAR-2 and JERS-1 SAR Data Wrangling Script. 
 
 Overview
 ========
 
-This script downloads ALOS tiles from the JAXA FTP and combines them by band, converts them to COGs, writes out ODC compatible metadata and then uploads the resulting files to S3. 
+This script downloads ALOS/JERS tiles from the JAXA FTP and combines them by band, converts them to COGs, writes out ODC compatible metadata and then uploads the resulting files to S3. 
 
 Requirements
 ========
