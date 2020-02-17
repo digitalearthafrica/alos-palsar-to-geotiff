@@ -83,6 +83,10 @@ def download_files(WORKDIR, OUTDIR, YEAR, TILE):
         ftp_location = "ftp://ftp.eorc.jaxa.jp/pub/ALOS-2/ext1/PALSAR-2_MSC/25m_MSC/{}/{}".format(
             YEAR, filename
         )
+    elif int(YEAR) < 2000:
+        ftp_location = "ftp://ftp.eorc.jaxa.jp/pub/ALOS/ext1/JERS-1_MSC/25m_MSC/{}/{}".format(
+            YEAR, filename
+        )
     else:
         ftp_location = "ftp://ftp.eorc.jaxa.jp/pub/ALOS/ext1/PALSAR_MSC/25m_MSC/{}/{}".format(
             YEAR, filename
@@ -102,7 +106,10 @@ def download_files(WORKDIR, OUTDIR, YEAR, TILE):
 
 def combine_cog(PATH, OUTPATH, TILE, YEAR):
     logging.info("Combining GeoTIFFs")
-    bands = ['HH', 'HV', 'linci', 'date', 'mask']
+    if int(YEAR) > 2000:
+        bands = ['HH', 'HV', 'linci', 'date', 'mask']
+    else:
+        bands = ['HH', 'linci', 'date', 'mask']
     output_cogs = []
 
     gtiff_abs_path = os.path.abspath(PATH)
@@ -199,19 +206,38 @@ def write_yaml(OUTDIR, YEAR, TILE):
         maskpath = '{}_{}_sl_mask_F02DAR.tif'.format(TILE, YEAR[-2:])
         datepath = '{}_{}_sl_date_F02DAR.tif'.format(TILE, YEAR[-2:])
         launch_date = "2014-05-24"
+        shortname = "alos"
     else:
         hhpath = '{}_{}_sl_HH.tif'.format(TILE, YEAR[-2:])
         hvpath = '{}_{}_sl_HV.tif'.format(TILE, YEAR[-2:])
         lincipath = '{}_{}_sl_linci.tif'.format(TILE, YEAR[-2:])
         maskpath = '{}_{}_sl_mask.tif'.format(TILE, YEAR[-2:])
         datepath = '{}_{}_sl_date.tif'.format(TILE, YEAR[-2:])
-        launch_date = "2006-01-26"
+        if int(YEAR) > 2000:
+            launch_date = "2006-01-24"
+            shortname = "alos"
+        else:
+            launch_date = "1992-02-11"
+            shortname = "jers"
+    if shortname == 'alos':
+        platform = "ALOS/ALOS-2"
+        instrument = "PALSAR/PALSAR-2"
+        cf = "83.0 dB"
+        bandpaths = {'hh': {'path': hhpath}, 'hv': {'path': hvpath}, 'linci': {'path': lincipath},
+                     'mask': {'path': maskpath}, 'date': {'path': datepath},}
+    else:
+        platform = "JERS-1"
+        instrument = "SAR"
+        cf = "84.66 dB"
+        bands = ['hh', 'linci', 'mask', 'date']
+        bandpaths = {'hh': {'path': hhpath}, 'linci': {'path': lincipath},
+                     'mask': {'path': maskpath}, 'date': {'path': datepath},}
     metadata_doc = {
-        'id': str(odc_uuid('alos', '1', [], YEAR=YEAR, TILE=TILE)),
+        'id': str(odc_uuid(shortname, '1', [], YEAR=YEAR, TILE=TILE)),
         'creation_dt': creation_date,
         'product_type': 'gamma0',
-        'platform': {'code': 'ALOS/ALOS-2'},
-        'instrument': {'name': 'PALSAR/PALSAR-2'},
+        'platform': {'code': platform},
+        'instrument': {'name': instrument},
         'format': {'name': 'GeoTIFF'},
         'extent': {
             'coord': coords,
@@ -226,28 +252,12 @@ def write_yaml(OUTDIR, YEAR, TILE):
             }
         },
         'image': {
-            'bands': {
-                'hh': {
-                    'path': hhpath,
-                },
-                'hv': {
-                    'path': hvpath,
-                },
-                'linci': {
-                    'path': lincipath,
-                },
-                'mask': {
-                    'path': maskpath,
-                },
-                'date': {
-                    'path': datepath,
-                }
-            }
+            'bands': bandpaths,
         },
         'lineage': {'source_datasets': {}},
         'property': {
             'launchdate': launch_date,
-            'cf': '83.0 dB',
+            'cf': cf,
         }
     }
 
@@ -299,7 +309,7 @@ def run_one(TILE_STRING, WORKDIR, OUTDIR, S3_BUCKET, S3_PATH):
 if __name__ == "__main__":
     logging.info("Starting default process")
     TILE_STRING = '2017/N25W020'
-    S3_BUCKET = 'test-results-deafrica-staging-west'
+    S3_BUCKET = 'deafrica-data-dev'
     S3_PATH = 'alos'
     WORKDIR = 'data/download'
     OUTDIR = 'data/out'
