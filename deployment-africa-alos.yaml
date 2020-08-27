@@ -11,8 +11,6 @@ spec:
       app: alos-cogger-deployment
   template:
     metadata:
-      annotations:
-        iam.amazonaws.com/role: deafrica-ec2-s3_access
       labels:
         app: alos-cogger-deployment
     spec:
@@ -49,3 +47,18 @@ spec:
           value: "alos"
         - name: SQS_QUEUE
           value: "alex-alive-queue"
+        - name: AWS_DEFAULT_REGION
+          valueFrom:
+            secretKeyRef:
+              name: processing-aws-creds-prod
+              key: AWS_DEFAULT_REGION
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: processing-aws-creds-prod
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: processing-aws-creds-prod
+              key: AWS_SECRET_ACCESS_KEY
