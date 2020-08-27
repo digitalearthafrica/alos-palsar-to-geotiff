@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: alos-cogger-deployment
+  namespace: processing
   labels:
     app: alos-cogger-deployment
 spec:
@@ -44,7 +45,7 @@ spec:
         - name: S3_BUCKET
           value: "deafrica-data-dev"
         - name: S3_PATH
-          value: "alos"
+          value: "jaxa/alos_palsar_mosaic"
         - name: SQS_QUEUE
           value: "alex-alive-queue"
         - name: AWS_DEFAULT_REGION
