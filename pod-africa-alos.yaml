@@ -7,6 +7,9 @@ metadata:
   annotations:
     iam.amazonaws.com/role: deafrica-ec2-s3_access
 spec:
+  nodeSelector:
+    beta.kubernetes.io/os: spot
+  restartPolicy: Never
   containers:
   - name: alos-cog-files
     image: opendatacube/alos-cogger
@@ -20,14 +23,24 @@ spec:
     tty: true
     stdin: true
     env:
-    - name: AWS_DEFAULT_REGION
-      value: "us-west-2"
     - name: S3_BUCKET
       value: "deafrica-data-dev"
     - name: S3_PATH
       value: "alos"
     - name: SQS_QUEUE
       value: "alex-alive-queue"
-  nodeSelector:
-    beta.kubernetes.io/os: linux
-  restartPolicy: Never
+    - name: AWS_DEFAULT_REGION
+      valueFrom:
+        secretKeyRef:
+          name: processing-aws-creds-prod
+          key: AWS_DEFAULT_REGION
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: processing-aws-creds-prod
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: processing-aws-creds-prod
+          key: AWS_SECRET_ACCESS_KEY
